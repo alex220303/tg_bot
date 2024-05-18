@@ -14,14 +14,19 @@ family = FamilyLawStructure()
 
 @bot.message_handler(content_types=['text'])
 def start(message):
-    if (message.text == '/start'):
+    if message.text == '/start' or message.text == 'На главную':
         markup = telebot.types.InlineKeyboardMarkup()
         btn1 = telebot.types.InlineKeyboardButton('Перейти на Консультант Плюс', url='https://www.consultant.ru/document/cons_doc_LAW_8982/ba7190a7c7918e934967e929e796d726c2647382/')
         markup.add(btn1)
         btn2 = telebot.types.InlineKeyboardButton('Вывести главы', callback_data='getChapters')
-        # btn3 = telebot.types.InlineKeyboardButton('Вывести статью', callback_data='writeArticle')
         markup.add(btn2) 
-        bot.send_message(message.chat.id, 'Select buttons', reply_markup=markup)
+
+        markup2 = telebot.types.ReplyKeyboardMarkup()
+        btnDown = telebot.types.KeyboardButton('На главную')
+        markup2.add(btnDown)
+
+        bot.send_message(message.chat.id, 'Семейный кодекс РФ Раздел II. ЗАКЛЮЧЕНИЕ И ПРЕКРАЩЕНИЕ БРАКА', reply_markup=markup)
+        bot.send_message(message.chat.id, None, reply_markup=markup2)
 
 
 @bot.callback_query_handler(func=lambda call: True)
