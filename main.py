@@ -16,12 +16,12 @@ family = FamilyLawStructure()
 def start(message):
     if message.text == '/start':
         markup = telebot.types.InlineKeyboardMarkup()
-        btn1 = telebot.types.InlineKeyboardButton('Перейти на Консультант Плюс', url='https://www.consultant.ru/document/cons_doc_LAW_8982/ba7190a7c7918e934967e929e796d726c2647382/')
-        markup.add(btn1)
         btn2 = telebot.types.InlineKeyboardButton('Вывести главы', callback_data='getChapters')
         markup.add(btn2) 
+        btn1 = telebot.types.InlineKeyboardButton('Перейти на Консультант Плюс', url='https://www.consultant.ru/document/cons_doc_LAW_8982/ba7190a7c7918e934967e929e796d726c2647382/')
+        markup.add(btn1)
 
-        bot.send_message(message.chat.id, 'Семейный кодекс РФ Раздел II. ЗАКЛЮЧЕНИЕ И ПРЕКРАЩЕНИЕ БРАКА', reply_markup=markup)
+        bot.send_photo(message.chat.id, photo='https://www.advgazeta.ru/upload/iblock/139/semeynoe_zakonodatelstvo_ozhidayut_masshtabnye_popravki_1.jpg', caption='Семейный кодекс РФ Раздел II. ЗАКЛЮЧЕНИЕ И ПРЕКРАЩЕНИЕ БРАКА', reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -43,18 +43,16 @@ def callbackMessage(call):
         buttons.append(telebot.types.InlineKeyboardButton('Перейти на Консультант Плюс', url='https://www.consultant.ru/document/cons_doc_LAW_8982/ba7190a7c7918e934967e929e796d726c2647382/'))
         markup.row(buttons[-1])
 
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите главу, которую хотите увидеть', reply_markup=markup)
+        bot.edit_message_caption(chat_id=call.message.chat.id, message_id=call.message.message_id, caption='Выберите главу, которую хотите увидеть', reply_markup=markup)
     
     elif call.data.startswith('chapter_'):
         chapter_index = int(call.data.split('_')[1])
         chapters = family.get_chapters()
         selected_chapter = chapters[chapter_index]
         
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'Вы выбрали главу: {selected_chapter}')
-        
         articles = family.get_articles_for_chapter(selected_chapter)
         markup = create_article_buttons(articles, f'chapter_{chapter_index}')
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите статью, которую хотите увидеть', reply_markup=markup)
+        bot.edit_message_caption(chat_id=call.message.chat.id, message_id=call.message.message_id, caption='Выберите статью, которую хотите увидеть', reply_markup=markup)
 
     elif call.data.startswith('article_'):
         _article, _chapter = call.data.split('-')
@@ -70,7 +68,7 @@ def callbackMessage(call):
         description, link = family.get_article_description_and_link(selected_chapter, selected_article)
         markup = create_article_buttons(articles, f'chapter_{chapter_index}')
         
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'{description}{link if link else ''}', parse_mode='html', reply_markup=markup)
+        bot.edit_message_caption(chat_id=call.message.chat.id, message_id=call.message.message_id, caption=f'{description}{link if link else ''}', parse_mode='html', reply_markup=markup)
 
 def create_article_buttons(articles, chapter):
     markup = telebot.types.InlineKeyboardMarkup()
