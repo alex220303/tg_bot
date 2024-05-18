@@ -109,10 +109,10 @@ class FamilyLawStructure:
 
 
     def get_chapters(self):
-        return self.structure.keys()
+        return list(self.laws.keys())
 
     def get_articles_for_chapter(self, chapter_name):
-        return self.structure[chapter_name].keys()
+        return list(self.laws[chapter_name].keys())
 
     def get_article_description_and_link(self, chapter_name, article_name):
         article_dict = self.laws[chapter_name][article_name]
