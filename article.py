@@ -121,7 +121,7 @@ class FamilyLawStructure:
         link = f"https://www.consultant.ru/document/cons_doc_LAW_8982/{url}"
         
         if (len(description) > 200):
-            return description[:200], link
+            return description[:200], f"\n\n[Перейти на статью для дополнительной информации]({link})"
         else:
             return description
 
