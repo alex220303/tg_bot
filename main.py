@@ -47,34 +47,33 @@ def callbackMessage(call):
         chapters = family.get_chapters()
         selected_chapter = chapters[chapter_index]
         
-        # Здесь вы можете добавить логику для обработки выбора главы,
-        # например, отправить сообщение с кнопками статей для этой главы
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'Вы выбрали главу: {selected_chapter}')
         
-        # Отправка сообщения с кнопками статей для выбранной главы
         articles = family.get_articles_for_chapter(selected_chapter)
-        markup = create_article_buttons(articles)
+        markup = create_article_buttons(articles, f'chapter_{chapter_index}')
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите статью, которую хотите увидеть', reply_markup=markup)
 
     elif call.data.startswith('article_'):
-        article_index = int(call.data.split('_')[1])
+        _article, _chapter = call.data.split('-')
+        chapter_index = int(_chapter.split('_')[1])
+        article_index = int(_article.split('_')[1])
+
         chapters = family.get_chapters()
         selected_chapter = chapters[chapter_index]
-        
-        # Здесь вы можете добавить логику для обработки выбора главы,
-        # например, отправить сообщение с кнопками статей для этой главы
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'Вы выбрали главу: {selected_chapter}')
-        
-        # Отправка сообщения с кнопками статей для выбранной главы
-        articles = family.get_articles_for_chapter(selected_chapter)
-        markup = create_article_buttons(articles)
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите статью, которую хотите увидеть', reply_markup=markup)
 
-def create_article_buttons(articles):
+        articles = family.get_articles_for_chapter(selected_chapter)
+        selected_article = articles[article_index]
+        
+        description, link = family.get_article_description_and_link(selected_chapter, selected_article)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'{description}{link if link else ''}', parse_mode='html')
+        
+        # bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите статью, которую хотите увидеть', reply_markup=markup)
+
+def create_article_buttons(articles, chapter):
     markup = telebot.types.InlineKeyboardMarkup()
     buttons = []
     for i, article in enumerate(articles):
-        buttons.append(telebot.types.InlineKeyboardButton(article, callback_data=f"article_{i}"))
+        buttons.append(telebot.types.InlineKeyboardButton(article, callback_data=f"article_{i}-{chapter}"))
         
         if i % 2:
             markup.row(buttons[i - 1], buttons[i])

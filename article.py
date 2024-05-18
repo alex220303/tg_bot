@@ -113,18 +113,14 @@ class FamilyLawStructure:
 
     def get_articles_for_chapter(self, chapter_name):
         return list(self.laws[chapter_name].keys())
-
+        
     def get_article_description_and_link(self, chapter_name, article_name):
         article_dict = self.laws[chapter_name][article_name]
         description = article_dict["описание"]
         url = article_dict["url"]
         link = f"https://www.consultant.ru/document/cons_doc_LAW_8982/{url}"
         
-        if (len(description) > 200):
-            return description[:200], f"\n\n[Перейти на статью для дополнительной информации]({link})"
+        if (len(description) > 500):
+            return f'{description[:500]}...', f"\n\n<a href='{link}'>Перейти на статью для дополнительной информации</a>"
         else:
-            return description
-
-
-
-
+            return description, None
