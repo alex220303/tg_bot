@@ -56,6 +56,20 @@ def callbackMessage(call):
         markup = create_article_buttons(articles)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите статью, которую хотите увидеть', reply_markup=markup)
 
+    elif call.data.startswith('article_'):
+        article_index = int(call.data.split('_')[1])
+        chapters = family.get_chapters()
+        selected_chapter = chapters[chapter_index]
+        
+        # Здесь вы можете добавить логику для обработки выбора главы,
+        # например, отправить сообщение с кнопками статей для этой главы
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text=f'Вы выбрали главу: {selected_chapter}')
+        
+        # Отправка сообщения с кнопками статей для выбранной главы
+        articles = family.get_articles_for_chapter(selected_chapter)
+        markup = create_article_buttons(articles)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите статью, которую хотите увидеть', reply_markup=markup)
+
 def create_article_buttons(articles):
     markup = telebot.types.InlineKeyboardMarkup()
     buttons = []

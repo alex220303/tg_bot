@@ -120,7 +120,10 @@ class FamilyLawStructure:
         url = article_dict["url"]
         link = f"https://www.consultant.ru/document/cons_doc_LAW_8982/{url}"
         
-        return description[:200], link
+        if (len(description) > 200):
+            return description[:200], link
+        else:
+            return description
 
 
 
