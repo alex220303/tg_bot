@@ -1,0 +1,5 @@
+# Игнорирование env
+/env/*
+!/env/.gitkeep
+
+/config.conf
