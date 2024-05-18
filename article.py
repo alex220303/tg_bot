@@ -114,7 +114,14 @@ class FamilyLawStructure:
     def get_articles_for_chapter(self, chapter_name):
         return list(self.laws[chapter_name].keys())
 
-    def get_article_description_and_link(self, chapter_name, article_name):
+    def find_parent_key(self, child_key):
+        for parent_key, child_dict in self.laws.items():
+            if child_key in child_dict:
+                return parent_key
+        return None 
+
+    def get_article_description_and_link(self, article_name):
+        chapter_name = self.find_parent_key(article_name)
         article_dict = self.laws[chapter_name][article_name]
         description = article_dict["описание"]
         url = article_dict["url"]
